@@ -36,7 +36,7 @@ namespace Quantum.Kata.Superposition {
         // Type the following: H(q);
         // Then rebuild the project and rerun the tests - T01_PlusState_Test should now pass!
 
-        // ...
+        H(q);
     }
     
     
@@ -46,7 +46,8 @@ namespace Quantum.Kata.Superposition {
     operation MinusState (q : Qubit) : Unit {
         // In this task, as well as in all subsequent ones, you have to come up with the solution yourself.
             
-        // ...
+        H(q);
+        Z(q);
     }
     
     
