@@ -59,7 +59,7 @@ namespace Quantum.Kata.Superposition {
     operation UnequalSuperposition (q : Qubit, alpha : Double) : Unit {
         // Hint: Experiment with rotation gates from the Microsoft.Quantum.Intrinsic namespace.
         // Note that all rotation operators rotate the state by _half_ of its angle argument.
-
+        Ry(2.0*alpha, q);
         // ...
     }
     
@@ -83,7 +83,12 @@ namespace Quantum.Kata.Superposition {
         // The following lines enforce the constraints on the input that you are given.
         // You don't need to modify them. Feel free to remove them, this won't cause your code to fail.
         EqualityFactI(Length(qs), 2, "The array should have exactly 2 qubits.");
-
+        H(0);
+        H(1);
+        Controlled Y(1, 0);
+        Controlled Z(0, 1);
+        Z(0);
+        Z(1);
         // Hint: Is this state separable?
         // ...
     }
@@ -115,6 +120,11 @@ namespace Quantum.Kata.Superposition {
     // Input: N qubits in |0...0⟩ state.
     // Goal: create a GHZ state (|0...0⟩ + |1...1⟩) / sqrt(2) on these qubits.
     operation GHZ_State (qs : Qubit[]) : Unit {
+        H(qs[0]);
+        for( let i = 1; i<Length(qs); i++){
+        }
+
+
         // Hint: N can be found as Length(qs).
 
         // ...
