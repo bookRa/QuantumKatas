@@ -4,6 +4,7 @@
 namespace Quantum.Kata.Superposition {
     
     open Microsoft.Quantum.Diagnostics;
+    open Microsoft.Quantum.Arrays;
     open Microsoft.Quantum.Intrinsic;
     open Microsoft.Quantum.Canon;
     open Microsoft.Quantum.Convert;
@@ -71,7 +72,8 @@ namespace Quantum.Kata.Superposition {
         // The following lines enforce the constraints on the input that you are given.
         // You don't need to modify them. Feel free to remove them, this won't cause your code to fail.
         EqualityFactI(Length(qs), 2, "The array should have exactly 2 qubits.");
-
+            H(qs[0]);
+    H(qs[1]);
         // ...
     }
     
@@ -83,12 +85,11 @@ namespace Quantum.Kata.Superposition {
         // The following lines enforce the constraints on the input that you are given.
         // You don't need to modify them. Feel free to remove them, this won't cause your code to fail.
         EqualityFactI(Length(qs), 2, "The array should have exactly 2 qubits.");
-        H(0);
-        H(1);
-        Controlled Y(1, 0);
-        Controlled Z(0, 1);
-        Z(0);
-        Z(1);
+        H(qs[0]);
+        H(qs[1]);
+        
+        Z(qs[0]);
+        S(qs[1]);
         // Hint: Is this state separable?
         // ...
     }
@@ -99,6 +100,8 @@ namespace Quantum.Kata.Superposition {
     // Goal: create a Bell state |Φ⁺⟩ = (|00⟩ + |11⟩) / sqrt(2) on these qubits.
     operation BellState (qs : Qubit[]) : Unit {
         // ...
+        H(qs[0]);
+        CNOT(qs[0], qs[1]);
     }
     
     
@@ -112,7 +115,11 @@ namespace Quantum.Kata.Superposition {
     //       2: |Ψ⁺⟩ = (|01⟩ + |10⟩) / sqrt(2)
     //       3: |Ψ⁻⟩ = (|01⟩ - |10⟩) / sqrt(2)
     operation AllBellStates (qs : Qubit[], index : Int) : Unit {
-        // ...
+        H(qs[0]);
+        if(index >= 0){ CNOT(qs[0], qs[1]);}
+        if(index % 2 == 1){Z(qs[0]);}
+        if (index >= 2){ X(qs[1]);}
+        // if(index == 3){}
     }
     
     
@@ -121,7 +128,9 @@ namespace Quantum.Kata.Superposition {
     // Goal: create a GHZ state (|0...0⟩ + |1...1⟩) / sqrt(2) on these qubits.
     operation GHZ_State (qs : Qubit[]) : Unit {
         H(qs[0]);
-        for( let i = 1; i<Length(qs); i++){
+        
+        for (q in Rest(qs)) {
+            CNOT(qs[0], q);
         }
 
 
@@ -137,6 +146,9 @@ namespace Quantum.Kata.Superposition {
     // (i.e. state (|0...0⟩ + ... + |1...1⟩) / sqrt(2^N) ).
     operation AllBasisVectorsSuperposition (qs : Qubit[]) : Unit {
         // ...
+        for(q in qs){
+            H(q);
+        }
     }
     
     
@@ -145,6 +157,10 @@ namespace Quantum.Kata.Superposition {
     // Goal: create the state (|00⟩ + |01⟩ + |10⟩) / sqrt(3) on these qubits.
     operation ThreeStates_TwoQubits (qs : Qubit[]) : Unit {
         // ...
+        let theta = ArcSin(1.0/Sqrt(3.0));
+        Ry(2.0*theta, qs[0]);
+        (ControlledOnInt(0,H))([qs[0]], qs[1]);
+
     }
     
     
@@ -163,7 +179,13 @@ namespace Quantum.Kata.Superposition {
         EqualityFactI(Length(bits), Length(qs), "Arrays should have the same length");
         EqualityFactB(bits[0], true, "First bit of the input bit string should be set to true");
 
-        // ...
+        H(qs[0]);
+        for(idx in IndexRange(bits)){
+            if(bits[idx] and idx != 0){
+               CNOT(qs[0], qs[idx]);
+            }
+        }
+        
     }
     
     
@@ -180,6 +202,28 @@ namespace Quantum.Kata.Superposition {
     // and that the bit strings will differ in at least one bit.
     operation TwoBitstringSuperposition (qs : Qubit[], bits1 : Bool[], bits2 : Bool[]) : Unit {
         // ...
+        mutable firsth= -1;
+        for(i in 0 .. Length(qs)-1){
+            if(bits1[i] != bits2[i] and firsth==-1){
+                set firsth = i;
+            }
+        }
+        H(qs[firsth]);
+        for(j in 0 .. Length(qs) -1){
+            if(bits1[j] == bits2[j]){
+                if(bits1[j]){
+                    X(qs[j]);
+                }
+            }else{
+                if(j != firsth){
+                    CNOT(qs[firsth], qs[j]);
+                    if(bits1[firsth] != bits1[j]){
+                        X(qs[j]);
+                    }
+                }
+            }
+        }
+        
     }
     
     
