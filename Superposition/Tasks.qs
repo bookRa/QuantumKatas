@@ -253,6 +253,7 @@ namespace Quantum.Kata.Superposition {
     // Example: for N = 4, W state is (|1000⟩ + |0100⟩ + |0010⟩ + |0001⟩) / 2.
     operation WState_PowerOfTwo (qs : Qubit[]) : Unit {
         // Hint: you can use Controlled modifier to perform arbitrary controlled gates.
+        let k = Length(qs);
 
         // ...
     }
