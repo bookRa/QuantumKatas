@@ -215,8 +215,10 @@ namespace Quantum.Kata.Measurements {
     //         1 if they were in the W state.
     // The state of the qubits at the end of the operation does not matter.
     operation AllZerosOrWState (qs : Qubit[]) : Int {
-        // ...
-        return -1;
+        for(j in 0 .. Length(qs)-1){
+            if(M(qs[j])== One){return 1;}
+        }
+        return 0;
     }
 
 
